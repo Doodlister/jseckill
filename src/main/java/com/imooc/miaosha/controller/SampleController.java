@@ -44,8 +44,9 @@ public class SampleController {
     @RequestMapping("/db/get")
     @ResponseBody
     public Result<User> dbGet() {
-    	User user = userService.getById(1);
-        return Result.success(user);
+    	//User user = userService.getById(1);
+        //return Result.success(user);
+        return null;
     }
     
     

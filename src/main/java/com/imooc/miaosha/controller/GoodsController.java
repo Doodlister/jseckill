@@ -3,6 +3,9 @@ package com.imooc.miaosha.controller;
 import java.util.List;
 
 import com.imooc.miaosha.redis.GoodsKey;
+import com.imooc.miaosha.result.Result;
+
+import com.imooc.miaosha.vo.GoodsDetailVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -115,18 +118,15 @@ public class GoodsController {
         return html;
     }
 
-    @RequestMapping("/to_detail/{goodsId}")
-    public String detail1(Model model, MiaoshaUser user,
-                          @PathVariable("goodsId") long goodsId) {
-        model.addAttribute("user", user);
 
+    @RequestMapping(value = "/detail/{goodsId}")
+    @ResponseBody
+    public Result<GoodsDetailVo> detail(MiaoshaUser user,
+                                        @PathVariable("goodsId") long goodsId) {
         GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
-        model.addAttribute("goods", goods);
-
         long startAt = goods.getStartDate().getTime();
         long endAt = goods.getEndDate().getTime();
         long now = System.currentTimeMillis();
-
         int miaoshaStatus = 0;
         int remainSeconds = 0;
         if (now < startAt) {//秒杀还没开始，倒计时
@@ -139,9 +139,12 @@ public class GoodsController {
             miaoshaStatus = 1;
             remainSeconds = 0;
         }
-        model.addAttribute("miaoshaStatus", miaoshaStatus);
-        model.addAttribute("remainSeconds", remainSeconds);
-        return "goods_detail";
+        GoodsDetailVo vo = new GoodsDetailVo();
+        vo.setGoods(goods);
+        vo.setUser(user);
+        vo.setRemainSeconds(remainSeconds);
+        vo.setMiaoshaStatus(miaoshaStatus);
+        return Result.success(vo);
     }
 
 }
