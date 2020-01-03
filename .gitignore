@@ -24,9 +24,10 @@ hs_err_pid*
 
 # idea config
 
-!.idea
-!.idea/
+.idea
+.idea/
 
-# binary file
-!target
-!target/
+
+
+target
+target/
